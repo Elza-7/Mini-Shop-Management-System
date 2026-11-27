@@ -1,9 +1,31 @@
+import json
+import os
+products = []
+total_sales=0
+def save_data():
+    data = {
+        "products": products,
+        "total_sales": total_sales
+    }
+
+    with open("products.json", "w") as file:
+        json.dump(data, file, indent=4)
+def load_data():
+    global products, total_sales
+
+    if os.path.exists("products.json"):
+        with open("products.json", "r") as file:
+            data = json.load(file)
+
+            products = data["products"]
+            total_sales = data["total_sales"]
+load_data()
 
 print("==============================")
 print(" MINI SHOP MANAGEMENT SYSTEM")
 print("==============================")
 
-products = []
+
 
 while True:
     print("1. Add Product")
@@ -116,6 +138,7 @@ while True:
                     if 0 < quantity <= product["quantity"]:
                         amount = product["price"] * quantity
                         total += amount
+                        total_sales += amount
                         product["quantity"] -= quantity
                         print(product["name"], "x", quantity, "= ₹", amount)
                     else:
@@ -126,8 +149,21 @@ while True:
             print("\n===== FINAL BILL =====")
             print("Total Amount: ₹", total)
             print("Thank you for shopping!")
+    elif choice == 7:
+        total_products = len(products)
 
+        total_quantity = 0
+        inventory_value = 0
 
+        for product in products:
+            total_quantity += product["quantity"]
+            inventory_value += product["price"] * product["quantity"]
+
+        print("\n===== SALES REPORT =====")
+        print("Total Products:", total_products)
+        print("Total Stock:", total_quantity)
+        print("Inventory Value: ₹", inventory_value)
+        print("Total Sales: ₹", total_sales)
     elif choice == 8:
         print("Thank you for using Mini Shop!")
         break
